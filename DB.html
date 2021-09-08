@@ -1,0 +1,165 @@
+<html>
+  <link rel="stylesheet" href="styles.css" />
+  <title>Anything</title>
+  <h1>Hello, welcome to the the Datastore</h1>
+
+  <form onsubmit=" return false" id="dataForm">
+    <h5>Account Lookup</h5>
+    <h6
+      class="h6"
+      id="error"
+      style=" display:none; background-color:red; font-size:larger    "
+    >
+      ERROR <br />Account not found, please check spelling or capitalization
+    </h6>
+    <br />
+
+    Name or Account Number => <input type="text" name="dataSlot1" />
+    <br />
+
+    <br />
+    <input type="submit" value="Find" id="submit" />
+  </form>
+
+  <p id="pTag" class="ptag">
+    Please Click Find to search
+  </p>
+  <select id="Drop" class="hidden">
+    <option value="Age"> Age </option>
+    <option value="Fname"> Fname </option>
+    <option value="Lname"> Lname </option>
+    <option value="notes"> notes </option>
+  </select>
+  <input id="update" class="hidden" />
+  <input type="button" id="changeInfo" value="Update,Submit" class="hidden" />
+</html>
+
+<!--FIREBASE STUFF!! -->
+
+<!-- The core Firebase JS SDK is always required and must be listed first -->
+<script src="https://www.gstatic.com/firebasejs/8.7.1/firebase-app.js"></script>
+
+<!-- TODO: Add SDKs for Firebase products that you want to use
+  https://firebase.google.com/docs/web/setup#available-libraries -->
+<script src="https://www.gstatic.com/firebasejs/8.7.1/firebase-analytics.js"></script>
+
+<script src="https://www.gstatic.com/firebasejs/8.7.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.7.1/firebase-database.js"></script>
+
+<script>
+  // Your web app's Firebase configuration
+  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+
+  var firebaseConfig = {
+    apiKey: 'AIzaSyDtmhEOO1nznPqiR7BwFrvxMWNNEUULZ0U',
+    authDomain: 'password-login-84387.firebaseapp.com',
+    projectId: 'password-login-84387',
+    storageBucket: 'password-login-84387.appspot.com',
+    messagingSenderId: '742798890492',
+    appId: '1:742798890492:web:0c82fa949f61c6852b8e79',
+    measurementId: 'G-G12D39KLFV'
+  };
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+  firebase.analytics();
+
+  var database = firebase.database();
+
+  var loginForm = document.getElementById('dataForm');
+  var loginButton = document.getElementById('submit');
+  var hidData = database.ref('hiddenData/hiddenData2');
+  loginButton.addEventListener('click', e => {
+    var textBox = loginForm.dataSlot1.value;
+    var found = false;
+    if (isNumeric(textBox)) {
+      var id = database.ref('hiddenData/hiddenData2/' + textBox);
+      var info = '';
+      id.on('value', snapshot => {
+        snapshot.forEach(data => {
+          info += data.key + ': ' + data.val() + '\<br>';
+
+          found = true;
+        });
+      });
+
+      document.getElementById('pTag').innerHTML = info;
+      document.getElementById('Drop').className = document
+        .getElementById('Drop')
+        .className.replace('hidden', '');
+      document.getElementById('update').className = document
+        .getElementById('update')
+        .className.replace('hidden', '');
+      document.getElementById('changeInfo').className = document
+        .getElementById('changeInfo')
+        .className.replace('hidden', '');
+    } else {
+      hidData.on('value', snapshot => {
+        snapshot.forEach(data => {
+          var identifier = database.ref('hiddenData/hiddenData2/' + data.key);
+          identifier.on('value', snapshot => {
+            snapshot.forEach(data2 => {
+              if (data2.key === 'Lname' && textBox === data2.val()) {
+                found = true;
+                var id = database.ref('hiddenData/hiddenData2/' + data.key);
+                var info = '';
+                id.on('value', snapshot => {
+                  snapshot.forEach(data => {
+                    info += data.key + ': ' + data.val() + '\<br>';
+                  });
+                });
+                document.getElementById('pTag').innerHTML = info;
+                found = true;
+                document.getElementById(
+                  'Drop'
+                ).className = document
+                  .getElementById('Drop')
+                  .className.replace('hidden', '');
+                document.getElementById(
+                  'update'
+                ).className = document
+                  .getElementById('update')
+                  .className.replace('hidden', '');
+                document.getElementById(
+                  'changeInfo'
+                ).className = document
+                  .getElementById('changeInfo')
+                  .className.replace('hidden', '');
+              }
+            });
+          });
+        });
+      });
+    }
+
+    if (found) {
+      document.getElementById('error').style.display = 'none';
+    } else {
+      document.getElementById('error').style.display = 'block';
+    }
+  });
+  function isNumeric(n) {
+    return !isNaN(parseFloat(n)) && isFinite(n);
+  }
+
+  var button1 = document.getElementById('changeInfo');
+  button1.addEventListener('click', () => {
+    var value = document.getElementById('update').value;
+    var dropMenu = document.getElementById('Drop');
+    var whateveryouwanttocallit =
+      dropMenu.options[dropMenu.selectedIndex].value;
+
+    var STR = document.getElementById('pTag').innerHTML;
+    var index1 = STR.search('Number');
+    index1 += 8;
+    console.log(STR);
+    console.log(index1);
+    var STR2 = STR.substring(index1, index1 + 1);
+    while (isNumeric(STR2)) {
+      index1 += 1;
+      STR2 += STR.substring(index1, index1 + 1);
+    }
+    STR2 = STR2.replace('<', '');
+    console.log(STR2);
+    var identifier1 = database.ref('hiddenData/hiddenData2/');
+  });
+</script>

@@ -1,0 +1,191 @@
+<html>
+<link rel="stylesheet" href="styles.css">
+<body>
+  <header>Login To SecureLeaf Services</header>
+  <h1>
+  <!--
+  (Left what you put in HTML in the comments below if u wanna compare)
+Username:  <input type="text" name=Username id=Username> 
+  <br>
+  <br>
+Password:  <input type="text" name=Password id=Password >
+  <button name="Submit" onClick="Login">Submit</button>
+ -->
+
+  <form id="logform" onsubmit="return false">
+    <!--Crezates form tag in html for user inoutz-->
+    Username: <input type="text" name="username" id="usernamePlace">
+    <br>
+    <!--Identify the input type and an id for it, the name attribute helps to refrence elements in JS-->
+    Password: <input type="password" name="password" id="passwordPlace">
+    <br>
+   User Pin: <input type="text" name="pin" id="pinPlace">
+    <br>
+    <input type="submit" value="Login" id="signIn" class="buttons">
+    <!--the type submit is similiar to button tag but the input type is used in form tags which allows for an inclick event-->
+  </form>
+  <a href="nice.html" style="display: none" id="easter egg">Nice</a>
+  <a href="nice.html" style="display: block" id="easter egg">Nice</a>
+
+
+
+
+
+
+
+
+
+
+  <!--FIREBASE STUFF!! -->
+
+  <!-- The core Firebase JS SDK is always required and must be listed first -->
+  <script src="https://www.gstatic.com/firebasejs/8.7.1/firebase-app.js"></script>
+
+  <!-- TODO: Add SDKs for Firebase products that you want to use
+     https://firebase.google.com/docs/web/setup#available-libraries -->
+  <script src="https://www.gstatic.com/firebasejs/8.7.1/firebase-analytics.js"></script>
+
+  <script src="https://www.gstatic.com/firebasejs/8.7.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.7.1/firebase-database.js"></script>
+
+
+
+  <script>
+    // Your web app's Firebase configuration
+  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+  
+
+    var firebaseConfig = {
+      apiKey: "AIzaSyDtmhEOO1nznPqiR7BwFrvxMWNNEUULZ0U",
+      authDomain: "password-login-84387.firebaseapp.com",
+      projectId: "password-login-84387",
+      storageBucket: "password-login-84387.appspot.com",
+      messagingSenderId: "742798890492",
+      appId: "1:742798890492:web:0c82fa949f61c6852b8e79",
+      measurementId: "G-G12D39KLFV"
+    };
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    firebase.analytics();
+
+
+    var loginForm = document.getElementById("logform");
+    var loginButton = document.getElementById("signIn");
+
+/*Created a var in JS that executes the login in button, so when 
+the program listens for the click on login button named 
+*/
+  loginButton.addEventListener("click", (e) => {
+      
+    var username = loginForm.username.value;
+    var password = loginForm.password.value;
+    var pin = loginForm.pin.value;
+    var UserCorrect = false
+    var PassCorrect = false
+
+
+
+
+
+    var database = firebase.database();
+
+
+    var user = database.ref("userLogins/" + pin)
+    console.log(user)
+    user.orderByKey().on('value', (snapshot) => {
+      snapshot.forEach((data) => {
+
+
+
+        if (data.key ==="Username" && username === data.val())
+        {
+          UserCorrect = true
+          
+        }
+        if (data.key ==="password" && password === data.val() )
+        {
+          PassCorrect = true
+        } 
+
+
+
+
+
+        console.log(data.key + " " + data.val());
+      });
+
+      console.log("for each loop over")
+
+      if (PassCorrect && UserCorrect) {
+      window.location.href = "DB.html"
+    }
+
+
+    });
+
+    console.log("reached here")
+
+
+
+
+  })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+  
+  </script>
+
+  <!--END OF FIREBASE STUFF!! -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script>
+    /*function Login(JS_Username, JS_Password) {
+
+document.getElementById("Username").innerHTML;
+document.getElementById("Password").innerHTML;
+
+if (JS_Password === "hmm") {
+alert (bob) */
+
+
+
+
+//Create variables to refrence the id's in html tags for form and signin button
+
+
+
+  </script>
+
+</body>
+
+</html>
